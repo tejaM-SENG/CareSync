@@ -1,0 +1,6 @@
+Django
+djangorestframework
+validators
+requests
+gunicorn
+whitenoise
