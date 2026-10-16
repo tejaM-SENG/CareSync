@@ -1,0 +1,257 @@
+
+{% extends 'healthcare/base.html' %}
+
+{% block title %}Add Doctor | Healthcare Management System{% endblock %}
+
+{% block content %}
+
+<main class="add-doctor-page">
+    <div class="container">
+
+        <!-- PAGE HEADER -->
+        <div class="add-doctor-heading">
+            <a href="{% url 'doctors' %}" class="add-doctor-back">
+                <i class="bi bi-arrow-left"></i>
+                Back to Doctors
+            </a>
+
+            <div class="add-doctor-heading-content">
+                <div class="add-doctor-heading-icon">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+
+                <div>
+                    <span class="add-doctor-eyebrow">ADMINISTRATION</span>
+                    <h1>Add a Doctor</h1>
+                    <p>
+                        Register a healthcare professional and create
+                        their secure login account.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-xl-9 col-lg-10">
+
+                <section class="add-doctor-card">
+
+                    <!-- FORM INTRO -->
+                    <div class="add-doctor-card-header">
+                        <div>
+                            <h2>Doctor Registration</h2>
+                            <p>Enter the doctor's professional and account details.</p>
+                        </div>
+
+                        <span class="add-doctor-required">
+                            <span>*</span> Required fields
+                        </span>
+                    </div>
+
+                    <form method="POST" class="add-doctor-form">
+                        {% csrf_token %}
+
+                        <!-- DOCTOR DETAILS -->
+                        <div class="add-doctor-section-title">
+                            <span class="add-doctor-section-icon">
+                                <i class="bi bi-clipboard2-pulse"></i>
+                            </span>
+
+                            <div>
+                                <h3>Professional Information</h3>
+                                <p>Doctor profile and contact details</p>
+                            </div>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="row g-3">
+                            {% for field in form %}
+                                <div class="col-md-6">
+                                    <div class="add-doctor-field">
+
+                                        <label for="{{ field.id_for_label }}"
+                                               class="form-label">
+                                            {{ field.label }}
+                                            {% if field.field.required %}
+                                                <span class="required-star">*</span>
+                                            {% endif %}
+                                        </label>
+
+                                        {{ field }}
+
+                                        {% if field.help_text %}
+                                            <div class="add-doctor-help">
+                                                {{ field.help_text }}
+                                            </div>
+                                        {% endif %}
+
+                                        {% if field.errors %}
+                                            <div class="add-doctor-field-error">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                                {{ field.errors }}
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- LOGIN DETAILS -->
+                        <div class="add-doctor-section-title account-section-title">
+                            <span class="add-doctor-section-icon account-icon">
+                                <i class="bi bi-shield-lock"></i>
+                            </span>
+
+                            <div>
+                                <h3>Login Credentials</h3>
+                                <p>Create the doctor's initial account credentials</p>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+
+                            <!-- USERNAME -->
+                            <div class="col-md-6">
+                                <div class="add-doctor-field">
+                                    <label for="username" class="form-label">
+                                        Username <span class="required-star">*</span>
+                                    </label>
+
+                                    <div class="add-doctor-input-wrap">
+                                        <i class="bi bi-person"></i>
+                                        <input
+                                            type="text"
+                                            name="username"
+                                            id="username"
+                                            class="form-control"
+                                            placeholder="Create a username"
+                                            autocomplete="off"
+                                            value="{{ request.POST.username|default:'' }}"
+                                            required
+                                        >
+                                    </div>
+
+                                    {% if username_error %}
+                                        <div class="add-doctor-field-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ username_error }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- TEMPORARY PASSWORD -->
+                            <div class="col-md-6">
+                                <div class="add-doctor-field">
+                                    <label for="password" class="form-label">
+                                        Temporary Password
+                                        <span class="required-star">*</span>
+                                    </label>
+
+                                    <div class="add-doctor-input-wrap">
+                                        <i class="bi bi-key"></i>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            id="password"
+                                            class="form-control"
+                                            placeholder="Set a temporary password"
+                                            autocomplete="new-password"
+                                            required
+                                        >
+                                        <button type="button"
+                                                class="add-doctor-password-toggle"
+                                                id="toggleDoctorPassword"
+                                                aria-label="Show password"
+                                                aria-pressed="false">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="add-doctor-help">
+                                        The doctor must change this password
+                                        during their first login.
+                                    </div>
+
+                                    {% if password_error %}
+                                        <div class="add-doctor-field-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ password_error }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- FIRST LOGIN NOTICE -->
+                        <div class="add-doctor-security">
+                            <i class="bi bi-shield-check"></i>
+                            <div>
+                                <strong>First-login password protection</strong>
+                                <p>
+                                    The account is intended for the assigned
+                                    doctor. They will be prompted to set a new
+                                    password after their first approved login.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div class="add-doctor-actions">
+                            <a href="{% url 'doctors' %}"
+                               class="add-doctor-cancel">
+                                Cancel
+                            </a>
+
+                            <button type="submit" class="add-doctor-submit">
+                                <i class="bi bi-person-check-fill"></i>
+                                Create Doctor Account
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+
+                    </form>
+                </section>
+
+                <p class="add-doctor-page-note">
+                    <i class="bi bi-lock-fill"></i>
+                    Doctor accounts are created by authorized administrators.
+                </p>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const passwordInput = document.getElementById("password");
+        const toggleButton = document.getElementById("toggleDoctorPassword");
+
+        if (passwordInput && toggleButton) {
+            toggleButton.addEventListener("click", function () {
+                const showPassword = passwordInput.type === "password";
+
+                passwordInput.type = showPassword ? "text" : "password";
+                toggleButton.setAttribute("aria-pressed", String(showPassword));
+                toggleButton.setAttribute(
+                    "aria-label",
+                    showPassword ? "Hide password" : "Show password"
+                );
+
+                toggleButton.innerHTML = showPassword
+                    ? '<i class="bi bi-eye-slash"></i>'
+                    : '<i class="bi bi-eye"></i>';
+            });
+        }
+    });
+</script>
+
+{% endblock %}

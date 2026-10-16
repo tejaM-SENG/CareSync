@@ -1,0 +1,214 @@
+
+{% extends "healthcare/base.html" %}
+{% load static %}
+
+{% block title %}Add Patient | Healthcare Management{% endblock %}
+
+{% block content %}
+
+<div class="patient-add-page">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="patient-add-breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'dashboard' %}">
+                    <i class="bi bi-grid-1x2 me-1"></i> Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'patients' %}">Patients</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                Add Patient
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Page Heading -->
+    <div class="patient-add-heading">
+        <div>
+            <span class="patient-add-eyebrow">
+                PATIENT MANAGEMENT
+            </span>
+
+            <h1>Add New Patient</h1>
+
+            <p>
+                Register a patient and maintain their information
+                in the healthcare system.
+            </p>
+        </div>
+
+        <a href="{% url 'patients' %}"
+           class="patient-add-back">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back to Patients</span>
+        </a>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Main Registration Form -->
+        <div class="col-lg-8">
+
+            <div class="patient-add-card">
+
+                <div class="patient-add-card-header">
+                    <div class="patient-add-icon">
+                        <i class="bi bi-person-vcard"></i>
+                    </div>
+
+                    <div>
+                        <h2>Patient Information</h2>
+                        <p>Enter the patient's details below.</p>
+                    </div>
+                </div>
+
+                <div class="patient-add-card-body">
+
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger patient-add-alert">
+                                <i class="bi bi-exclamation-circle me-2"></i>
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="row g-4">
+
+                            {% for field in form %}
+
+                                {% if field.name != "date_registered" %}
+
+                                    <div class="{% if field.name == 'address' %}col-12{% else %}col-md-6{% endif %}">
+
+                                        <label for="{{ field.id_for_label }}"
+                                               class="form-label patient-add-label">
+                                            {{ field.label }}
+
+                                            {% if field.field.required %}
+                                                <span class="patient-add-required">*</span>
+                                            {% endif %}
+                                        </label>
+
+                                        {{ field }}
+
+                                        {% if field.help_text %}
+                                            <div class="form-text">
+                                                {{ field.help_text }}
+                                            </div>
+                                        {% endif %}
+
+                                        {% if field.errors %}
+                                            <div class="patient-add-error">
+                                                {{ field.errors }}
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+                        <div class="patient-add-form-footer">
+                            <p>
+                                <i class="bi bi-shield-check me-1"></i>
+                                Please verify the information before saving.
+                            </p>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{% url 'patients' %}"
+                                   class="patient-add-cancel">
+                                    Cancel
+                                </a>
+
+                                <button type="submit"
+                                        class="patient-add-submit">
+                                    <i class="bi bi-person-plus me-2"></i>
+                                    Register Patient
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Information Panel -->
+        <div class="col-lg-4">
+
+            <div class="patient-add-side-card">
+
+                <div class="patient-add-side-icon">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+
+                <h3>Patient Registration</h3>
+
+                <p>
+                    Keep patient records accurate and up to date
+                    to support effective healthcare administration.
+                </p>
+
+                <div class="patient-add-side-divider"></div>
+
+                <div class="patient-add-tip">
+                    <div class="patient-add-tip-icon">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                    <div>
+                        <h4>Accurate Information</h4>
+                        <p>Enter the patient's correct contact and personal details.</p>
+                    </div>
+                </div>
+
+                <div class="patient-add-tip">
+                    <div class="patient-add-tip-icon">
+                        <i class="bi bi-hospital"></i>
+                    </div>
+                    <div>
+                        <h4>Doctor Assignment</h4>
+                        <p>Select the appropriate doctor when assigning care.</p>
+                    </div>
+                </div>
+
+                <div class="patient-add-tip">
+                    <div class="patient-add-tip-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <div>
+                        <h4>Patient Privacy</h4>
+                        <p>Handle patient information responsibly and securely.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="patient-add-help-card">
+                <i class="bi bi-info-circle"></i>
+                <div>
+                    <h4>Need to make a correction?</h4>
+                    <p>
+                        You can return to the patient directory
+                        to review existing records.
+                    </p>
+                    <a href="{% url 'patients' %}">
+                        View Patients <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

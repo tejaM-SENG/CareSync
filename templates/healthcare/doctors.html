@@ -1,0 +1,194 @@
+
+{% extends 'healthcare/base.html' %}
+
+{% block title %}Our Doctors | Healthcare Management System{% endblock %}
+
+{% block content %}
+
+<section class="doctors-page">
+
+    <!-- Page Hero -->
+    <div class="doctors-hero">
+        <div class="container">
+            <div class="doctors-hero-content">
+                <div class="doctors-eyebrow">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                    OUR MEDICAL TEAM
+                </div>
+
+                <h1>
+                    Meet the people<br>
+                    <span>who care for you.</span>
+                </h1>
+
+                <p>
+                    Get to know our medical professionals, explore their
+                    specializations, and find the right care for your needs.
+                </p>
+
+                <div class="doctors-hero-meta">
+                    <span>
+                        <i class="bi bi-patch-check-fill"></i>
+                        Professional care
+                    </span>
+                    <span>
+                        <i class="bi bi-person-check-fill"></i>
+                        Patient-focused service
+                    </span>
+                </div>
+            </div>
+
+            <div class="doctors-hero-art">
+                <div class="hero-art-circle">
+                    <i class="bi bi-hospital"></i>
+                </div>
+                <div class="hero-art-badge">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                    <div>
+                        <strong>Your health matters</strong>
+                        <small>Care you can count on</small>
+                    </div>
+                </div>
+                <div class="hero-art-plus plus-one">+</div>
+                <div class="hero-art-plus plus-two">+</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Directory -->
+    <div class="container doctors-directory">
+
+        <div class="directory-heading">
+            <div>
+                <span class="section-kicker">FIND YOUR SPECIALIST</span>
+                <h2>Our Medical Specialists</h2>
+                <p>Explore our available doctors and their areas of expertise.</p>
+            </div>
+
+            {% if doctors %}
+                <div class="doctor-count">
+                    <i class="bi bi-people-fill"></i>
+                    <span>
+                        <strong>{{ doctors|length }}</strong>
+                        doctor{{ doctors|length|pluralize }}
+                    </span>
+                </div>
+            {% endif %}
+            
+        </div>
+
+        {% if user.is_staff %}
+            <div class="doctor-admin-toolbar">
+                <div class="doctor-admin-copy">
+                    <span class="doctor-admin-label">ADMINISTRATION</span>
+                    <h3>Doctor Management</h3>
+                    <p>Create and manage doctor accounts from one place.</p>
+                </div>
+
+                <a href="{% url 'add_doctor' %}" class="doctor-add-btn">
+                    <i class="bi bi-person-plus-fill"></i>
+                    <span>Add Doctor</span>
+                    <i class="bi bi-arrow-right doctor-add-arrow"></i>
+                </a>
+            </div>
+        {% endif %}
+
+        {% if doctors %}
+            <div class="row g-4">
+
+                {% for doctor in doctors %}
+                    <div class="col-sm-6 col-xl-4">
+                        <article class="doctor-card">
+
+                            <div class="doctor-card-top">
+                                <div class="doctor-avatar">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+
+                                <span class="doctor-status">
+                                    <span></span>
+                                    Medical Professional
+                                </span>
+                            </div>
+
+                            <div class="doctor-card-body">
+                                <span class="doctor-label">DOCTOR PROFILE</span>
+
+                                <h3>Dr. {{ doctor.name }}</h3>
+
+                                <div class="doctor-specialty">
+                                    <i class="bi bi-award-fill"></i>
+                                    {{ doctor.specialization|default:"General Practice" }}
+                                </div>
+
+                                <p class="doctor-description">
+                                    Explore this doctor's profile to learn more
+                                    about their professional information and
+                                    medical specialization.
+                                </p>
+
+                                <a href="{% url 'doctor_detail' doctor.id %}"
+                                   class="doctor-profile-link">
+                                    View Doctor Profile
+                                    <i class="bi bi-arrow-up-right"></i>
+                                </a>
+
+                                {% if user.is_staff %}
+                                    <div class="doctor-admin-actions">
+                                        <a href="{% url 'edit_doctor' doctor.id %}"
+                                           class="doctor-edit-link">
+                                            <i class="bi bi-pencil-square"></i>
+                                            Edit
+                                        </a>
+
+                                        <a href="{% url 'delete_doctor' doctor.id %}"
+                                           class="doctor-delete-link">
+                                            <i class="bi bi-trash3"></i>
+                                            Delete
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="doctor-card-accent"></div>
+                        </article>
+                    </div>
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+            <div class="doctors-empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-person-plus"></i>
+                </div>
+                <h3>No doctors available yet</h3>
+                <p>
+                    Our doctor directory is currently being updated.
+                    Please check back soon.
+                </p>
+            </div>
+        {% endif %}
+
+        <!-- Bottom Information -->
+        <div class="doctors-help-banner">
+            <div class="help-banner-icon">
+                <i class="bi bi-chat-heart-fill"></i>
+            </div>
+            <div class="help-banner-content">
+                <h3>Your health journey starts here.</h3>
+                <p>
+                    Explore our doctor profiles to learn about the medical
+                    professionals available through our healthcare system.
+                </p>
+            </div>
+            <a href="{% url 'home' %}#services" class="help-banner-link">
+                Explore services
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

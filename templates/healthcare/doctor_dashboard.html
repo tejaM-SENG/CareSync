@@ -1,0 +1,280 @@
+
+{% extends "healthcare/base.html" %}
+
+{% block title %}Doctor Dashboard | Healthcare{% endblock %}
+
+{% block content %}
+
+<div class="doctor-dashboard">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="doctor-breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'doctor_dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                Doctor Portal
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Welcome Banner -->
+    <section class="doctor-welcome">
+        <div class="doctor-welcome-content">
+            <span class="doctor-welcome-label">
+                <i class="bi bi-heart-pulse-fill me-2"></i>
+                DOCTOR PORTAL
+            </span>
+
+            <h1>
+                Welcome, Dr. {{ doctor.name|default:request.user.username }}!
+            </h1>
+
+            <p>
+                Manage your assigned patients, explore the healthcare
+                directory, and review your professional profile.
+            </p>
+
+            <a href="{% url 'doctor_patients' %}"
+               class="doctor-welcome-button">
+                <i class="bi bi-people me-2"></i>
+                View My Patients
+                <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+
+        <div class="doctor-welcome-art" aria-hidden="true">
+            <div class="doctor-art-circle doctor-art-circle-one"></div>
+            <div class="doctor-art-circle doctor-art-circle-two"></div>
+
+            <div class="doctor-art-icon">
+                <i class="bi bi-person-fill-check"></i>
+            </div>
+
+            <div class="doctor-art-cross">
+                <i class="bi bi-plus-lg"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Heading -->
+    <div class="doctor-section-heading">
+        <div>
+            <h2>Your Workspace</h2>
+            <p>Quick access to your healthcare resources.</p>
+        </div>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="row g-4 doctor-dashboard-cards">
+
+        <div class="col-md-6">
+            <div class="doctor-action-card doctor-patients-card">
+
+                <div class="doctor-action-top">
+                    <div class="doctor-action-icon patients-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+
+                    <span class="doctor-card-tag">PATIENT CARE</span>
+                </div>
+
+                <h3>My Patients</h3>
+
+                <p>
+                    Access the patients assigned to your doctor profile
+                    and review their registered information.
+                </p>
+
+                <a href="{% url 'doctor_patients' %}"
+                   class="doctor-card-link">
+                    View Assigned Patients
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="doctor-action-card doctor-directory-card">
+
+                <div class="doctor-action-top">
+                    <div class="doctor-action-icon directory-icon">
+                        <i class="bi bi-hospital-fill"></i>
+                    </div>
+
+                    <span class="doctor-card-tag">DIRECTORY</span>
+                </div>
+
+                <h3>Doctor Directory</h3>
+
+                <p>
+                    Explore the healthcare directory and view
+                    doctors' specializations and professional details.
+                </p>
+
+                <a href="{% url 'doctors' %}"
+                   class="doctor-card-link">
+                    Explore Directory
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Profile Section -->
+    <section class="doctor-profile-card">
+
+        <div class="doctor-profile-header">
+            <div class="doctor-profile-heading">
+                <div class="doctor-profile-heading-icon">
+                    <i class="bi bi-person-vcard"></i>
+                </div>
+
+                <div>
+                    <h2>My Professional Profile</h2>
+                    <p>Review the information registered to your account.</p>
+                </div>
+            </div>
+
+            <a href="{% url 'edit_doctor' doctor.pk %}"
+               class="doctor-password-button">
+                <i class="bi bi-shield-lock me-2"></i>
+                Edit Password
+            </a>
+        </div>
+
+        <div class="doctor-profile-content">
+
+            <div class="doctor-profile-identity">
+                <div class="doctor-profile-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+
+                <div>
+                    <h3>
+                        Dr. {{ doctor.name|default:request.user.username }}
+                    </h3>
+
+                    <p>
+                        {{ doctor.specialization|default:"Medical Professional" }}
+                    </p>
+
+                    <span class="doctor-profile-status">
+                        <span class="doctor-status-dot"></span>
+                        Professional Account
+                    </span>
+                </div>
+            </div>
+
+            <div class="doctor-profile-divider"></div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <div class="doctor-profile-field">
+                        <span class="doctor-field-icon">
+                            <i class="bi bi-person"></i>
+                        </span>
+
+                        <div>
+                            <span class="doctor-field-label">Full Name</span>
+                            <p>
+                                {{ doctor.name|default:request.user.username }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="doctor-profile-field">
+                        <span class="doctor-field-icon">
+                            <i class="bi bi-award"></i>
+                        </span>
+
+                        <div>
+                            <span class="doctor-field-label">Specialization</span>
+                            <p>
+                                {{ doctor.specialization|default:"Not provided" }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="doctor-profile-field">
+                        <span class="doctor-field-icon">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+
+                        <div>
+                            <span class="doctor-field-label">Email Address</span>
+                            <p class="doctor-profile-value">
+                                {{ doctor.email|default:request.user.email|default:"Not provided" }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="doctor-profile-field">
+                        <span class="doctor-field-icon">
+                            <i class="bi bi-telephone"></i>
+                        </span>
+
+                        <div>
+                            <span class="doctor-field-label">Phone Number</span>
+                            <p>
+                                {{ doctor.phone|default:"Not provided" }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {% if doctor.qualification %}
+                <div class="col-md-6">
+                    <div class="doctor-profile-field">
+                        <span class="doctor-field-icon">
+                            <i class="bi bi-mortarboard"></i>
+                        </span>
+
+                        <div>
+                            <span class="doctor-field-label">Qualification</span>
+                            <p>{{ doctor.qualification }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if doctor.experience_years != None %}
+                <div class="col-md-6">
+                    <div class="doctor-profile-field">
+                        <span class="doctor-field-icon">
+                            <i class="bi bi-briefcase"></i>
+                        </span>
+
+                        <div>
+                            <span class="doctor-field-label">Experience</span>
+                            <p>{{ doctor.experience_years }} years</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <div class="doctor-profile-footer">
+            <i class="bi bi-info-circle me-2"></i>
+            Professional details are managed by the administrator.
+            Contact your administrator if any information needs correction.
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

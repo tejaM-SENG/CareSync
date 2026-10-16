@@ -1,0 +1,342 @@
+
+{% extends 'healthcare/base.html' %}
+
+{% block title %}Dr. {{ doctor.name }} | Healthcare Management System{% endblock %}
+
+{% block content %}
+
+<section class="doctor-detail-page">
+
+    <!-- Breadcrumb -->
+    <div class="container doctor-detail-container">
+        <nav class="doctor-breadcrumb" aria-label="Breadcrumb">
+            <a href="{% url 'home' %}">
+                <i class="bi bi-house-door"></i> Home
+            </a>
+            <i class="bi bi-chevron-right"></i>
+            <a href="{% url 'doctors' %}">Our Doctors</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Doctor Profile</span>
+        </nav>
+
+        <!-- Profile Header -->
+        <div class="doctor-profile-hero">
+            <div class="doctor-profile-hero-pattern"></div>
+
+            <div class="doctor-profile-main">
+                <div class="doctor-detail-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+
+                <div class="doctor-profile-heading">
+                    <span class="doctor-profile-kicker">
+                        <i class="bi bi-patch-check-fill"></i>
+                        MEDICAL PROFESSIONAL
+                    </span>
+
+                    <h1>Dr. {{ doctor.name }}</h1>
+
+                    <p class="doctor-profile-specialty">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                        {{ doctor.specialization|default:"General Practice" }}
+                    </p>
+
+                    <div class="doctor-profile-tags">
+                        {% if doctor.qualification %}
+                            <span>
+                                <i class="bi bi-mortarboard-fill"></i>
+                                {{ doctor.qualification }}
+                            </span>
+                        {% endif %}
+
+                        {% if doctor.experience_years %}
+                            <span>
+                                <i class="bi bi-briefcase-fill"></i>
+                                {{ doctor.experience_years }} year{{ doctor.experience_years|pluralize }} experience
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="doctor-profile-hero-actions">
+                <a href="{% url 'doctors' %}" class="doctor-back-link">
+                    <i class="bi bi-arrow-left"></i>
+                    All Doctors
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row g-4 doctor-detail-grid">
+
+            <!-- Left Column -->
+            <div class="col-lg-8">
+
+                <!-- About -->
+                <section class="doctor-detail-card">
+                    <div class="doctor-section-heading">
+                        <div class="doctor-section-icon">
+                            <i class="bi bi-person-lines-fill"></i>
+                        </div>
+                        <div>
+                            <h2>About the Doctor</h2>
+                            <p>Professional background and expertise</p>
+                        </div>
+                    </div>
+
+                    <p class="doctor-about-text">
+                        {% if doctor.bio %}
+                            {{ doctor.bio|linebreaksbr }}
+                        {% else %}
+                            Information about this doctor's professional
+                            background will be updated soon.
+                        {% endif %}
+                    </p>
+
+                    <div class="doctor-specialty-panel">
+                        <div class="doctor-specialty-panel-icon">
+                            <i class="bi bi-heart-pulse"></i>
+                        </div>
+                        <div>
+                            <span>Area of Specialization</span>
+                            <strong>{{ doctor.specialization|default:"General Practice" }}</strong>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Professional Details -->
+                <section class="doctor-detail-card">
+                    <div class="doctor-section-heading">
+                        <div class="doctor-section-icon">
+                            <i class="bi bi-award"></i>
+                        </div>
+                        <div>
+                            <h2>Professional Information</h2>
+                            <p>Qualifications and consultation details</p>
+                        </div>
+                    </div>
+
+                    <div class="doctor-information-grid">
+
+                        <div class="doctor-information-item">
+                            <span class="doctor-information-icon">
+                                <i class="bi bi-mortarboard"></i>
+                            </span>
+                            <div>
+                                <small>Qualifications</small>
+                                <strong>
+                                    {{ doctor.qualification|default:"Not provided" }}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="doctor-information-item">
+                            <span class="doctor-information-icon">
+                                <i class="bi bi-briefcase"></i>
+                            </span>
+                            <div>
+                                <small>Experience</small>
+                                <strong>
+                                    {% if doctor.experience_years %}
+                                        {{ doctor.experience_years }} year{{ doctor.experience_years|pluralize }}
+                                    {% else %}
+                                        Not provided
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="doctor-information-item">
+                            <span class="doctor-information-icon">
+                                <i class="bi bi-currency-rupee"></i>
+                            </span>
+                            <div>
+                                <small>Consultation Fee</small>
+                                <strong>
+                                    {% if doctor.consultation_fee != None %}
+                                        ₹{{ doctor.consultation_fee|floatformat:2 }}
+                                    {% else %}
+                                        Contact for fee
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="doctor-information-item">
+                            <span class="doctor-information-icon">
+                                <i class="bi bi-calendar2-check"></i>
+                            </span>
+                            <div>
+                                <small>Availability</small>
+                                <strong>
+                                    {{ doctor.availability|default:"Contact for availability" }}
+                                </strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Linked Patients: staff only -->
+                {% if user.is_staff %}
+                    <section class="doctor-detail-card doctor-patients-card">
+                        <div class="doctor-section-heading doctor-patients-heading">
+                            <div class="doctor-section-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div>
+                                <h2>Linked Patients</h2>
+                                <p>Patients assigned to Dr. {{ doctor.name }}</p>
+                            </div>
+
+                            <span class="doctor-patient-count">
+                                {{ patients|length }}
+                            </span>
+                        </div>
+
+
+                        {% if patients %}
+                            <div class="table-responsive doctor-patient-table-wrap">
+                                <table class="table doctor-patient-table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Patient</th>
+                                            <th>Age</th>
+                                            <th>Gender</th>
+                                            <th>Phone</th>
+                                            <th class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for patient in patients %}
+                                            <tr>
+                                                <td>
+                                                    <div class="doctor-patient-name">
+                                                        <span>
+                                                            <i class="bi bi-person-fill"></i>
+                                                        </span>
+                                                        {{ patient.name }}
+                                                    </div>
+                                                </td>
+
+                                                <td>{{ patient.age|default:"—" }}</td>
+                                                <td>{{ patient.gender|default:"—" }}</td>
+                                                <td>{{ patient.phone|default:"—" }}</td>
+
+                                                <td class="text-end">
+                                                    <a href="{% url 'patient_detail' patient.pk %}"
+                                                    class="patient-view-btn">
+                                                        <i class="bi bi-eye"></i>
+                                                        <span>View Patient</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+
+                            <div class="doctor-no-patients">
+                                <i class="bi bi-people"></i>
+                                <strong>No patients linked</strong>
+                                <p>No patients are currently assigned to this doctor.</p>
+                            </div>
+                        {% endif %}
+                    </section>
+                {% endif %}
+
+            </div>
+
+            <!-- Right Column -->
+            <aside class="col-lg-4">
+
+                <!-- Contact -->
+                <section class="doctor-detail-card doctor-contact-card">
+                    <div class="doctor-section-heading">
+                        <div class="doctor-section-icon">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <div>
+                            <h2>Contact Details</h2>
+                            <p>Get in touch with the doctor</p>
+                        </div>
+                    </div>
+
+                    <div class="doctor-contact-item">
+                        <span class="doctor-contact-icon">
+                            <i class="bi bi-telephone"></i>
+                        </span>
+                        <div>
+                            <small>Phone Number</small>
+                            {% if doctor.phone %}
+                                <a href="tel:{{ doctor.phone }}">
+                                    {{ doctor.phone }}
+                                </a>
+                            {% else %}
+                                <strong>Not provided</strong>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="doctor-contact-item">
+                        <span class="doctor-contact-icon">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <div>
+                            <small>Email Address</small>
+                            {% if doctor.email %}
+                                <a href="mailto:{{ doctor.email }}" class="doctor-email">
+                                    {{ doctor.email }}
+                                </a>
+                            {% else %}
+                                <strong>Not provided</strong>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="doctor-contact-note">
+                        <i class="bi bi-info-circle"></i>
+                        Please contact the healthcare facility to confirm
+                        appointment availability and consultation fees.
+                    </div>
+                </section>
+
+                <!-- Admin Actions -->
+                {% if user.is_staff %}
+                    <section class="doctor-admin-card">
+                        <span class="doctor-admin-kicker">ADMINISTRATION</span>
+                        <h3>Manage Doctor</h3>
+                        <p>Update this profile or remove it from the directory.</p>
+
+                        <a href="{% url 'edit_doctor' doctor.id %}"
+                           class="doctor-admin-edit">
+                            <i class="bi bi-pencil-square"></i>
+                            Edit Doctor Details
+                        </a>
+
+                        <a href="{% url 'delete_doctor' doctor.id %}"
+                           class="doctor-admin-delete">
+                            <i class="bi bi-trash3"></i>
+                            Delete Doctor
+                        </a>
+                    </section>
+                {% endif %}
+
+                <!-- Patient privacy note -->
+                <div class="doctor-privacy-note">
+                    <i class="bi bi-shield-check"></i>
+                    <p>
+                        <strong>Your privacy matters.</strong>
+                        Patient records are restricted to authorized staff.
+                    </p>
+                </div>
+
+            </aside>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

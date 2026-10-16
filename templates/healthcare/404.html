@@ -1,0 +1,50 @@
+{%extends 'healthcare/base.html'%}
+{% load static %}
+{%block content%}
+<section class="error-page">
+
+    <div class="error-container">
+        <div class="error-card">
+
+            <div class="error-icon">
+                <i class="bi bi-hospital"></i>
+            </div>
+
+            <span class="error-label">ERROR 404</span>
+
+            <h1>Oops! Page not found.</h1>
+
+            <p class="error-description">
+                The page you're looking for doesn't exist, may have been moved,
+                or the URL may be incorrect.
+            </p>
+
+            <div class="error-illustration">
+                <span>4</span>
+                <i class="bi bi-search"></i>
+                <span>4</span>
+            </div>
+
+            <div class="error-actions">
+                <a href="{% url 'home' %}" class="error-home-btn">
+                    <i class="bi bi-house-door me-2"></i>
+                    Back to Home
+                </a>
+
+                <button type="button" class="error-back-btn"
+                        onclick="history.back()">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Go Back
+                </button>
+            </div>
+
+            <div class="error-footer">
+                <i class="bi bi-shield-check me-1"></i>
+                Healthcare Management System
+            </div>
+
+        </div>
+    </section>
+
+</div>
+{%endblock%}

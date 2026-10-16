@@ -1,0 +1,268 @@
+
+{% extends "healthcare/base.html" %}
+
+{% block title %}My Patients | Healthcare{% endblock %}
+
+{% block content %}
+
+<div class="doctor-patients-page">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="dp-breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'doctor_dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                My Patients
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Page Heading -->
+    <div class="dp-page-heading">
+        <div>
+            <span class="dp-eyebrow">PATIENT MANAGEMENT</span>
+            <h1>My Patients</h1>
+            <p>
+                View patient records assigned to your doctor profile.
+            </p>
+        </div>
+
+        <a href="{% url 'doctor_dashboard' %}" class="dp-back-button">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Summary -->
+    <div class="dp-summary-card">
+        <div class="dp-summary-icon">
+            <i class="bi bi-people-fill"></i>
+        </div>
+
+        <div class="dp-summary-info">
+            <span>Total Assigned Patients</span>
+            <h2>{{ patients|length }}</h2>
+            <p>Patient records linked to your profile</p>
+        </div>
+
+        <div class="dp-summary-decoration" aria-hidden="true">
+            <i class="bi bi-heart-pulse"></i>
+        </div>
+    </div>
+            <!-- Search -->
+
+
+    <!-- Patient Records -->
+    <section class="dp-records-card">
+
+        <div class="dp-records-header">
+            <div>
+                <h2>
+                    <i class="bi bi-clipboard2-pulse me-2"></i>
+                    Patient Records
+                </h2>
+                <p>Review contact information and patient details.</p>
+            </div>
+
+            {% if patients %}
+            <div class='text-end'>
+                <span class="dp-record-count">
+                    {{ patients|length }}
+                    {% if patients|length == 1 %}Patient{% else %}Patients{% endif %}
+                </span>
+                <div class="dp-search-area">
+                    <div class="dp-search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="search"
+                            id="patientSearch"
+                            placeholder="Search by name, phone, or address..."
+                            aria-label="Search assigned patients">
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if patients %}
+
+
+
+            <div class="table-responsive">
+                <table class="table dp-patient-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="dp-number-column">Si</th>
+                            <th>Patient</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Phone Number</th>
+                            <th>Address</th>
+                            <th class="text-end dp-action-column">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="patientTableBody">
+                        {% for patient in patients %}
+                            <tr class="dp-patient-row">
+                                <td class="dp-row-number">
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    <div class="dp-patient-identity">
+                                        <div class="dp-patient-avatar">
+                                            <i class="bi bi-person-fill"></i>
+                                        </div>
+
+                                        <div>
+                                            <span class="dp-patient-name">
+                                                {{ patient.name }}
+                                            </span>
+                                            <span class="dp-patient-id">
+                                                Patient #{{ patient.pk }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="dp-data-value">
+                                        {{ patient.age|default:"—" }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="dp-gender-badge">
+                                        {{ patient.gender|default:"—" }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="dp-phone-value">
+                                        <i class="bi bi-telephone me-1"></i>
+                                        {{ patient.phone|default:"—" }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="dp-address-value">
+                                        {{ patient.address|default:"—"|truncatechars:35 }}
+                                    </span>
+                                </td>
+
+                                <td class="text-end">
+                                    <a href="{% url 'patient_detail' patient.pk %}"
+                                       class="dp-view-button">
+                                        <i class="bi bi-eye me-1"></i>
+                                        View Patient
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- No search results -->
+            <div id="patientSearchEmpty" class="dp-search-empty" hidden>
+                <i class="bi bi-search"></i>
+                <h3>No matching patients</h3>
+                <p>Try a different name, phone number, or address.</p>
+            </div>
+
+            <div class="dp-table-footer">
+                <span>
+                    <i class="bi bi-shield-check me-1"></i>
+                    Patient records are available for authorized viewing.
+                </span>
+                <span class="dp-footer-count" id="visiblePatientCount">
+                    {{ patients|length }} records
+                </span>
+            </div>
+
+        {% else %}
+
+            <!-- Empty State -->
+            <div class="dp-empty-state">
+                <div class="dp-empty-icon">
+                    <i class="bi bi-clipboard2-x"></i>
+                </div>
+
+                <h3>No Patients Assigned Yet</h3>
+
+                <p>
+                    There are currently no patient records assigned to your
+                    profile. Contact your administrator if you believe
+                    this is incorrect.
+                </p>
+
+                <a href="{% url 'doctor_dashboard' %}"
+                   class="dp-empty-button">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Return to Dashboard
+                </a>
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- Privacy Note -->
+    <div class="dp-privacy-note">
+        <i class="bi bi-shield-lock-fill"></i>
+        <p>
+            <strong>Patient confidentiality</strong>
+            <span>
+                Patient information is sensitive. Access and use these
+                records only for authorized healthcare purposes.
+            </span>
+        </p>
+    </div>
+
+</div>
+
+{% if patients %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("patientSearch");
+    const clearButton = document.getElementById("clearPatientSearch");
+    const rows = Array.from(document.querySelectorAll(".dp-patient-row"));
+    const emptyMessage = document.getElementById("patientSearchEmpty");
+    const countLabel = document.getElementById("visiblePatientCount");
+
+    function filterPatients() {
+        const query = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+            const matches = row.textContent.toLowerCase().includes(query);
+            row.hidden = !matches;
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        emptyMessage.hidden = visibleCount !== 0;
+        countLabel.textContent =
+            visibleCount + (visibleCount === 1 ? " record" : " records");
+
+        clearButton.style.visibility = query ? "visible" : "hidden";
+    }
+
+    searchInput.addEventListener("input", filterPatients);
+
+    clearButton.addEventListener("click", function () {
+        searchInput.value = "";
+        filterPatients();
+        searchInput.focus();
+    });
+
+    filterPatients();
+});
+</script>
+{% endif %}
+
+{% endblock %}

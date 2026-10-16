@@ -1,0 +1,592 @@
+
+{% extends "healthcare/base.html" %}
+{% load static %}
+
+{% block title %}Patient Record | Healthcare Management System{% endblock %}
+
+{% block content %}
+
+<div class="patient-record-page">
+
+    <!-- Breadcrumb -->
+    <div class="patient-record-breadcrumb">
+        <a href="{% url 'dashboard' %}">
+            <i class="bi bi-house-door"></i> Dashboard
+        </a>
+        <i class="bi bi-chevron-right"></i>
+        <a href="{% url 'patients' %}">Patients</a>
+        <i class="bi bi-chevron-right"></i>
+        <span>Patient Record</span>
+    </div>
+
+    <!-- Patient Header -->
+    <section class="patient-record-hero">
+
+        <div class="patient-record-identity">
+
+            <div class="patient-record-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="patient-record-heading">
+                <span class="patient-record-eyebrow">
+                    <i class="bi bi-shield-check"></i>
+                    PATIENT HEALTH RECORD
+                </span>
+
+                <h1>{{ patient.name }}</h1>
+
+                <div class="patient-record-meta">
+                    <span>
+                        <i class="bi bi-hash"></i>
+                        Patient ID: {{ patient.pk }}
+                    </span>
+
+                    <span>
+                        <i class="bi bi-calendar3"></i>
+                        Registered
+                        {{ patient.date_registered|date:"M d, Y" }}
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="patient-record-header-actions">
+
+            {% if user.is_staff %}
+            <a href="{% url 'patients' %}"
+               class="patient-record-back-btn">
+                <i class="bi bi-arrow-left"></i>
+                Back to Patients
+            </a>
+            {% else %}
+            <a href="{% url 'doctor_patients' %}"
+               class="patient-record-back-btn">
+                <i class="bi bi-arrow-left"></i>
+                Back to Patients
+            </a>
+            {%endif%}
+        </div>
+
+    </section>
+
+    <!-- Overview Cards -->
+    <section class="patient-record-summary">
+
+        <article class="patient-summary-card">
+            <div class="patient-summary-icon summary-age">
+                <i class="bi bi-person-vcard"></i>
+            </div>
+            <div>
+                <span>Patient Age</span>
+                <h3>{{ patient.age }} <small>years</small></h3>
+            </div>
+        </article>
+
+        <article class="patient-summary-card">
+            <div class="patient-summary-icon summary-gender">
+                <i class="bi bi-gender-ambiguous"></i>
+            </div>
+            <div>
+                <span>Gender</span>
+                <h3>{{ patient.gender|default:"Not recorded" }}</h3>
+            </div>
+        </article>
+
+        <article class="patient-summary-card">
+            <div class="patient-summary-icon summary-doctor">
+                <i class="bi bi-person-badge"></i>
+            </div>
+            <div>
+                <span>Assigned Doctor</span>
+                <h3>
+                    {% if patient.doctor %}
+                        {{ patient.doctor.name }}
+                    {% else %}
+                        Not assigned
+                    {% endif %}
+                </h3>
+            </div>
+        </article>
+
+        <article class="patient-summary-card">
+            <div class="patient-summary-icon summary-date">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+            <div>
+                <span>Registration Date</span>
+                <h3>{{ patient.date_registered|date:"M d, Y" }}</h3>
+            </div>
+        </article>
+
+    </section>
+
+    <!-- Main Layout -->
+    <div class="patient-record-layout">
+
+        <main class="patient-record-main">
+
+            <!-- Personal Information -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon">
+                        <i class="bi bi-person-lines-fill"></i>
+                    </div>
+                    <div>
+                        <h2>Personal Information</h2>
+                        <p>Basic demographic and contact information</p>
+                    </div>
+                </div>
+
+                <div class="patient-information-grid">
+
+                    <div class="patient-information-item">
+                        <span>Full Name</span>
+                        <strong>{{ patient.name }}</strong>
+                    </div>
+
+                    <div class="patient-information-item">
+                        <span>Patient ID</span>
+                        <strong>#{{ patient.pk }}</strong>
+                    </div>
+
+                    <div class="patient-information-item">
+                        <span>Age</span>
+                        <strong>{{ patient.age }} years</strong>
+                    </div>
+
+                    <div class="patient-information-item">
+                        <span>Gender</span>
+                        <strong>{{ patient.gender|default:"Not recorded" }}</strong>
+                    </div>
+
+                    <div class="patient-information-item">
+                        <span>Phone Number</span>
+                        <strong>
+                            {% if patient.phone %}
+                                <a href="tel:{{ patient.phone }}">
+                                    {{ patient.phone }}
+                                </a>
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="patient-information-item">
+                        <span>Date Registered</span>
+                        <strong>
+                            {{ patient.date_registered|date:"F d, Y" }}
+                        </strong>
+                    </div>
+
+                    <div class="patient-information-item patient-address-item">
+                        <span>Residential Address</span>
+                        <strong>
+                            {{ patient.address|default:"Address not provided" }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Medical History -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon history-icon">
+                        <i class="bi bi-clipboard2-pulse"></i>
+                    </div>
+                    <div>
+                        <h2>Medical History</h2>
+                        <p>Previous conditions and relevant medical background</p>
+                    </div>
+                </div>
+
+                <div class="patient-empty-state">
+                    <div class="patient-empty-icon">
+                        <i class="bi bi-journal-medical"></i>
+                    </div>
+                    <h3>No Medical History Recorded</h3>
+                    <p>
+                        Previous illnesses, surgeries, chronic conditions,
+                        family history and other relevant medical information
+                        have not been recorded in the current system.
+                    </p>
+                </div>
+
+            </section>
+
+            <!-- Allergies -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon allergy-icon">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <h2>Allergies & Alerts</h2>
+                        <p>Medication, food and other known allergies</p>
+                    </div>
+                </div>
+
+                <div class="patient-notice patient-notice-warning">
+                    <i class="bi bi-info-circle"></i>
+                    <div>
+                        <strong>Allergy information not recorded</strong>
+                        <p>
+                            The current database does not contain allergy
+                            records. Confirm allergy status with the patient
+                            before prescribing or administering treatment.
+                        </p>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Vitals -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon vitals-icon">
+                        <i class="bi bi-heart-pulse"></i>
+                    </div>
+                    <div>
+                        <h2>Vital Signs</h2>
+                        <p>Patient measurements and clinical observations</p>
+                    </div>
+                </div>
+
+                <div class="patient-vitals-grid">
+
+                    <div class="patient-vital-card">
+                        <i class="bi bi-heart-pulse"></i>
+                        <span>Blood Pressure</span>
+                        <strong>—</strong>
+                        <small>mmHg</small>
+                    </div>
+
+                    <div class="patient-vital-card">
+                        <i class="bi bi-thermometer-half"></i>
+                        <span>Temperature</span>
+                        <strong>—</strong>
+                        <small>°C</small>
+                    </div>
+
+                    <div class="patient-vital-card">
+                        <i class="bi bi-activity"></i>
+                        <span>Heart Rate</span>
+                        <strong>—</strong>
+                        <small>bpm</small>
+                    </div>
+
+                    <div class="patient-vital-card">
+                        <i class="bi bi-lungs"></i>
+                        <span>Respiratory Rate</span>
+                        <strong>—</strong>
+                        <small>breaths/min</small>
+                    </div>
+
+                    <div class="patient-vital-card">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Oxygen Saturation</span>
+                        <strong>—</strong>
+                        <small>SpO₂ %</small>
+                    </div>
+
+                    <div class="patient-vital-card">
+                        <i class="bi bi-person-standing"></i>
+                        <span>Height / Weight</span>
+                        <strong>—</strong>
+                        <small>Not recorded</small>
+                    </div>
+
+                </div>
+
+                <p class="patient-section-footnote">
+                    <i class="bi bi-info-circle"></i>
+                    No vital-sign measurements are stored in the current
+                    Patient model.
+                </p>
+
+            </section>
+
+            <!-- Diagnosis -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon diagnosis-icon">
+                        <i class="bi bi-clipboard2-check"></i>
+                    </div>
+                    <div>
+                        <h2>Diagnosis & Clinical Assessment</h2>
+                        <p>Doctor's assessment and diagnosed conditions</p>
+                    </div>
+                </div>
+
+                <div class="patient-empty-state">
+                    <div class="patient-empty-icon">
+                        <i class="bi bi-file-medical"></i>
+                    </div>
+                    <h3>No Diagnosis Records</h3>
+                    <p>
+                        Diagnosis, symptoms, examination findings and
+                        clinical assessment need to be added through a
+                        medical visit or diagnosis record.
+                    </p>
+                </div>
+
+            </section>
+
+            <!-- Medications -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon medication-icon">
+                        <i class="bi bi-capsule"></i>
+                    </div>
+                    <div>
+                        <h2>Medications & Prescriptions</h2>
+                        <p>Prescribed medicines and dosage instructions</p>
+                    </div>
+                </div>
+
+                <div class="patient-empty-state">
+                    <div class="patient-empty-icon">
+                        <i class="bi bi-prescription2"></i>
+                    </div>
+                    <h3>No Prescriptions Recorded</h3>
+                    <p>
+                        Medication name, dosage, frequency, route,
+                        duration and prescribing clinician are not
+                        available in the current database.
+                    </p>
+                </div>
+
+            </section>
+
+            <!-- Treatment -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon treatment-icon">
+                        <i class="bi bi-clipboard2-heart"></i>
+                    </div>
+                    <div>
+                        <h2>Treatment Plan & Follow-up</h2>
+                        <p>Care instructions and recommended next steps</p>
+                    </div>
+                </div>
+
+                <div class="patient-empty-state">
+                    <div class="patient-empty-icon">
+                        <i class="bi bi-calendar2-week"></i>
+                    </div>
+                    <h3>No Treatment Plan Available</h3>
+                    <p>
+                        Treatment recommendations, procedures, follow-up
+                        dates and care instructions have not yet been
+                        recorded for this patient.
+                    </p>
+                </div>
+
+            </section>
+
+            <!-- Appointments -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon appointment-icon">
+                        <i class="bi bi-calendar2-check"></i>
+                    </div>
+                    <div>
+                        <h2>Appointments & Visits</h2>
+                        <p>Consultations and previous clinical encounters</p>
+                    </div>
+                </div>
+
+                <div class="patient-empty-state">
+                    <div class="patient-empty-icon">
+                        <i class="bi bi-calendar-x"></i>
+                    </div>
+                    <h3>No Visit History</h3>
+                    <p>
+                        Appointment dates, consultation notes and visit
+                        outcomes require a separate appointment or
+                        encounter record.
+                    </p>
+                </div>
+
+            </section>
+
+            <!-- Lab Reports -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon lab-icon">
+                        <i class="bi bi-clipboard2-data"></i>
+                    </div>
+                    <div>
+                        <h2>Lab Reports & Investigations</h2>
+                        <p>Diagnostic tests, results and reports</p>
+                    </div>
+                </div>
+
+                <div class="patient-empty-state">
+                    <div class="patient-empty-icon">
+                        <i class="bi bi-file-earmark-medical"></i>
+                    </div>
+                    <h3>No Lab Reports Available</h3>
+                    <p>
+                        Laboratory tests, imaging reports, result values
+                        and report attachments are not stored in the
+                        current Patient model.
+                    </p>
+                </div>
+
+            </section>
+
+            <!-- Clinical Notes -->
+            <section class="patient-record-section">
+
+                <div class="patient-section-heading">
+                    <div class="patient-section-icon notes-icon">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <div>
+                        <h2>Clinical Notes</h2>
+                        <p>Consultation notes and care documentation</p>
+                    </div>
+                </div>
+
+                <div class="patient-empty-state">
+                    <div class="patient-empty-icon">
+                        <i class="bi bi-journal"></i>
+                    </div>
+                    <h3>No Clinical Notes</h3>
+                    <p>
+                        Clinical notes should be stored as dated records
+                        associated with the responsible healthcare
+                        professional and the relevant patient visit.
+                    </p>
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="patient-record-sidebar">
+
+            <!-- Care Team -->
+            <section class="patient-sidebar-card">
+
+                <div class="patient-sidebar-heading">
+                    <i class="bi bi-hospital"></i>
+                    <h2>Care Team</h2>
+                </div>
+
+                {% if patient.doctor %}
+
+                    <div class="patient-doctor-profile">
+                        <div class="patient-doctor-avatar">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </div>
+
+                        <div>
+                            <strong>Dr. {{ patient.doctor.name }}</strong>
+                            <span>
+                                {{ patient.doctor.specialization|default:"Doctor" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if patient.doctor.qualification %}
+                        <div class="patient-sidebar-detail">
+                            <span>Qualification</span>
+                            <strong>{{ patient.doctor.qualification }}</strong>
+                        </div>
+                    {% endif %}
+
+                    {% if patient.doctor.phone %}
+                        <div class="patient-sidebar-detail">
+                            <span>Contact</span>
+                            <strong>{{ patient.doctor.phone }}</strong>
+                        </div>
+                    {% endif %}
+
+                    {% if patient.doctor.email %}
+                        <div class="patient-sidebar-detail">
+                            <span>Email</span>
+                            <strong class="patient-doctor-email">
+                                {{ patient.doctor.email }}
+                            </strong>
+                        </div>
+                    {% endif %}
+
+                    <div class="patient-doctor-more">
+                        <a href="{% url 'doctor_detail' patient.doctor.pk %}"
+                        class="patient-record-back-btn">
+                            View More
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+
+                {% else %}
+
+                    <div class="patient-sidebar-empty">
+                        <i class="bi bi-person-exclamation"></i>
+                        <p>No doctor has been assigned to this patient.</p>
+                    </div>
+
+                {% endif %}
+
+
+            </section>
+
+            <!-- Record Information -->
+            <section class="patient-sidebar-card">
+
+                <div class="patient-sidebar-heading">
+                    <i class="bi bi-shield-lock"></i>
+                    <h2>Record Information</h2>
+                </div>
+
+                <div class="patient-sidebar-detail">
+                    <span>Patient Record</span>
+                    <strong>#{{ patient.pk }}</strong>
+                </div>
+
+                <div class="patient-sidebar-detail">
+                    <span>Registration</span>
+                    <strong>
+                        {{ patient.date_registered|date:"M d, Y" }}
+                    </strong>
+                </div>
+
+                <div class="patient-sidebar-detail">
+                    <span>Medical Record Status</span>
+                    <strong class="patient-record-status">
+                        <i class="bi bi-circle-fill"></i>
+                        Basic record created
+                    </strong>
+                </div>
+
+                <p class="patient-privacy-note">
+                    <i class="bi bi-lock-fill"></i>
+                    Patient health information is confidential.
+                    Access should be limited to authorized personnel.
+                </p>
+
+            </section>
+
+        </aside>
+
+    </div>
+
+</div>
+
+{% endblock %}

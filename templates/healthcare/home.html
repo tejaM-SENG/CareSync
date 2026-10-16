@@ -1,0 +1,339 @@
+{% extends 'healthcare/base.html' %}
+{% load static %}
+
+{% block title %}CareSync | Healthcare Management{% endblock %}
+
+{% block meta_description %}
+Explore a Django-based healthcare management platform with doctor profiles,
+patient records, role-based access, and REST API integration.
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-6">
+                <div class="hero-content">
+
+                    <div class="eyebrow">
+                        <span class="status-dot"></span>
+                        HEALTHCARE MANAGEMENT PLATFORM
+                    </div>
+
+                    <h1 class="hero-title">
+                        Better organized care.
+                        <span>Smarter management.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        A centralized platform to explore doctor profiles,
+                        organize patient records, and manage healthcare
+                        information through a secure, intuitive interface.
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="{% url 'doctors' %}" class="btn btn-brand btn-lg">
+                            Explore Our Doctors
+                            <i class="bi bi-arrow-up-right ms-2"></i>
+                        </a>
+
+                        <a href="#about" class="btn btn-brand-light btn-lg">
+                            Discover the Platform
+                        </a>
+                    </div>
+
+                    <div class="hero-proof">
+                        <div class="proof-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div>
+                            <strong>Role-based access</strong>
+                            <span>Protected management features</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="hero-visual">
+
+                    <div class="visual-glow"></div>
+
+                    <div class="hero-image-frame">
+                        <img src="{% static 'images/healthcare.png' %}"
+                             alt="Healthcare professionals"
+                             class="hero-image">
+                    </div>
+
+                    <div class="floating-panel floating-panel-top">
+                        <div class="floating-panel-icon">
+                            <i class="bi bi-heart-pulse"></i>
+                        </div>
+                        <div>
+                            <strong>Connected care</strong>
+                            <span>Doctor information</span>
+                        </div>
+                        <i class="bi bi-check-circle-fill text-success ms-auto"></i>
+                    </div>
+
+                    <div class="floating-panel floating-panel-bottom">
+                        <div class="floating-panel-icon teal-icon">
+                            <i class="bi bi-database-check"></i>
+                        </div>
+                        <div>
+                            <strong>Organized records</strong>
+                            <span>Structured data management</span>
+                        </div>
+                    </div>
+
+                    <div class="visual-caption">
+                        <span class="caption-line"></span>
+                        A unified healthcare workspace
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="hero-bottom-line">
+            <span><i class="bi bi-check2-circle"></i> Doctor directory</span>
+            <span><i class="bi bi-check2-circle"></i> Patient management</span>
+            <span><i class="bi bi-check2-circle"></i> REST API integration</span>
+            <span><i class="bi bi-check2-circle"></i> Role-based permissions</span>
+        </div>
+    </div>
+</section>
+
+
+<!-- ABOUT -->
+<section id="about" class="section-space about-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-5">
+                <div class="about-visual">
+                    <img src="{% static 'images/about.jpg' %}"
+                         alt="Healthcare team collaborating"
+                         class="about-image">
+
+                    <div class="about-image-label">
+                        <i class="bi bi-activity"></i>
+                        <span>Information, organized</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <span class="section-kicker">ABOUT THE PROJECT</span>
+
+                <h2 class="section-title">
+                    One platform for essential healthcare workflows.
+                </h2>
+
+                <p class="section-copy">
+                    CareSync is a web application built to demonstrate how
+                    healthcare information can be organized and managed
+                    through a structured backend and a responsive interface.
+                </p>
+
+                <p class="section-copy">
+                    Django handles application logic and data management,
+                    while Django REST Framework provides API endpoints.
+                    Role-based permissions separate administrative
+                    operations from doctor access.
+                </p>
+
+                <div class="about-points">
+                    <div class="about-point">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Dedicated doctor profiles and directory</span>
+                    </div>
+                    <div class="about-point">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Patient records linked to doctors</span>
+                    </div>
+                    <div class="about-point">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Authentication and permission controls</span>
+                    </div>
+                    <div class="about-point">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Database-backed CRUD and REST API operations</span>
+                    </div>
+                </div>
+
+                <a href="{% url 'doctors' %}" class="text-link mt-4">
+                    Browse the doctor directory
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- FEATURES -->
+<section id="services" class="section-space features-section">
+    <div class="container">
+
+        <div class="section-heading text-center">
+            <span class="section-kicker">PLATFORM CAPABILITIES</span>
+            <h2 class="section-title">Designed around everyday workflows.</h2>
+            <p class="section-copy">
+                Core features that demonstrate full-stack development,
+                data relationships, authentication, and API integration.
+            </p>
+        </div>
+
+        <div class="row g-4 mt-3">
+
+            <div class="col-md-6 col-xl-3">
+                <div class="feature-card">
+                    <div class="feature-icon blue">
+                        <i class="bi bi-person-vcard"></i>
+                    </div>
+                    <span class="feature-index">01 / DIRECTORY</span>
+                    <h3>Doctor Profiles</h3>
+                    <p>
+                        Browse doctor profiles, specializations, and
+                        relevant professional contact details.
+                    </p>
+                    <a href="{% url 'doctors' %}" class="feature-link">
+                        View doctors <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <div class="feature-card">
+                    <div class="feature-icon teal">
+                        <i class="bi bi-clipboard2-pulse"></i>
+                    </div>
+                    <span class="feature-index">02 / RECORDS</span>
+                    <h3>Patient Management</h3>
+                    <p>
+                        Create and maintain patient records with
+                        doctor associations and registration details.
+                    </p>
+                    <span class="feature-footnote">Authorized access</span>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <div class="feature-card">
+                    <div class="feature-icon purple">
+                        <i class="bi bi-braces"></i>
+                    </div>
+                    <span class="feature-index">03 / INTEGRATION</span>
+                    <h3>REST API</h3>
+                    <p>
+                        Expose application data through Django REST
+                        Framework serializers, viewsets, and routes.
+                    </p>
+                    <span class="feature-footnote">Django REST Framework</span>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <div class="feature-card">
+                    <div class="feature-icon orange">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <span class="feature-index">04 / SECURITY</span>
+                    <h3>Access Control</h3>
+                    <p>
+                        Separate administrative operations from
+                        doctor access using authentication and permissions.
+                    </p>
+                    <span class="feature-footnote">Role-based permissions</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- TECHNOLOGY -->
+<section class="technology-section section-space">
+    <div class="container">
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-5">
+                <span class="section-kicker">BUILT WITH</span>
+                <h2 class="section-title">
+                    A practical full-stack Django project.
+                </h2>
+                <p class="section-copy">
+                    The project brings together server-side development,
+                    relational data, templates, API endpoints, and responsive
+                    frontend styling in one application.
+                </p>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="technology-grid">
+                    <div class="technology-item">
+                        <i class="bi bi-filetype-py"></i>
+                        <span>Python</span>
+                    </div>
+                    <div class="technology-item">
+                        <i class="bi bi-server"></i>
+                        <span>Django</span>
+                    </div>
+                    <div class="technology-item">
+                        <i class="bi bi-diagram-3"></i>
+                        <span>REST Framework</span>
+                    </div>
+                    <div class="technology-item">
+                        <i class="bi bi-database"></i>
+                        <span>SQLite</span>
+                    </div>
+                    <div class="technology-item">
+                        <i class="bi bi-filetype-html"></i>
+                        <span>HTML &amp; CSS</span>
+                    </div>
+                    <div class="technology-item">
+                        <i class="bi bi-bootstrap"></i>
+                        <span>Bootstrap 5</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- CTA -->
+<section class="closing-section">
+    <div class="container">
+        <div class="closing-card">
+            <div class="closing-content">
+                <span class="closing-kicker">EXPLORE THE PLATFORM</span>
+                <h2>See how the pieces work together.</h2>
+                <p>
+                    Start with the public doctor directory, or sign in
+                    to access the features available to your account.
+                </p>
+            </div>
+
+            <div class="closing-actions">
+                <a href="{% url 'doctors' %}" class="btn btn-light btn-lg">
+                    Explore Doctors <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-closing-outline btn-lg">
+                    Sign In
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

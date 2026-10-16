@@ -1,0 +1,293 @@
+
+{% extends 'healthcare/base.html' %}
+
+{% block title %}Edit Doctor | Healthcare Management{% endblock %}
+
+{% block content %}
+
+<section class="doctor-edit-page">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="doctor-edit-breadcrumb">
+            <a href="{% url 'dashboard' %}">
+                <i class="bi bi-grid-1x2-fill"></i> Dashboard
+            </a>
+            <i class="bi bi-chevron-right"></i>
+            <a href="{% url 'doctors' %}">Doctors</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Edit Doctor</span>
+        </nav>
+
+        <!-- Page heading -->
+        <div class="doctor-edit-heading">
+            <div>
+                <span class="doctor-edit-eyebrow">
+                    <i class="bi bi-person-gear"></i> DOCTOR MANAGEMENT
+                </span>
+
+                <h1>Edit Doctor Profile</h1>
+
+                <p>
+                    Keep professional and contact information accurate
+                    and up to date.
+                </p>
+            </div>
+            {% if user.is_staff %}
+            <a href="{% url 'doctors' %}" class="doctor-edit-back">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back to Doctors</span>
+            </a>
+            {% else %}
+            <a href="{% url 'doctor_dashboard' %}" class="doctor-edit-back">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+            {%endif%}
+        </div>
+
+        <div class="doctor-edit-layout">
+
+            <!-- Profile summary -->
+            <aside class="doctor-edit-sidebar">
+                <div class="doctor-profile-card">
+
+                    <div class="doctor-profile-top">
+                        <div class="doctor-profile-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <span class="doctor-profile-status">
+                            <span></span> Profile Editing
+                        </span>
+                    </div>
+
+                    <div class="doctor-profile-info">
+                        <span class="doctor-profile-label">CURRENT PROFILE</span>
+
+                        <h2>{{ doctor.name }}</h2>
+
+                        <p>
+                            {{ doctor.specialization|default:"Medical Professional" }}
+                        </p>
+                    </div>
+
+                    <div class="doctor-profile-divider"></div>
+
+                    <div class="doctor-profile-detail">
+                        <span class="doctor-detail-icon">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <div>
+                            <small>Email Address</small>
+                            <p>{{ doctor.email|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="doctor-profile-detail">
+                        <span class="doctor-detail-icon">
+                            <i class="bi bi-telephone"></i>
+                        </span>
+                        <div>
+                            <small>Phone Number</small>
+                            <p>{{ doctor.phone|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="doctor-profile-note">
+                        <i class="bi bi-shield-check"></i>
+                        <p>
+                            Review the information carefully before
+                            saving your changes.
+                        </p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Edit form -->
+            <div class="doctor-edit-main">
+                <div class="doctor-edit-card">
+
+                    <div class="doctor-form-header">
+                        <div class="doctor-form-header-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+
+                        <div>
+                            <h2>Professional Information</h2>
+                            <p>Update the doctor's details below.</p>
+                        </div>
+                    </div>
+
+                    <div class="doctor-form-divider"></div>
+
+                    <form method="POST" class="doctor-edit-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="update_doctor">
+
+                        {% for field in form %}
+                            <div class="doctor-field-group">
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span class="doctor-required">*</span>
+                                    {% endif %}
+                                </label>
+
+                                {% if request.user.is_staff %}
+                                    {{ field }}
+                                {% else %}
+                                    <div class="doctor-readonly-field">
+                                        {{ field.value|default_if_none:"—" }}
+                                    </div>
+                                {% endif %}
+
+                                {% if request.user.is_staff and field.errors %}
+                                    <div class="doctor-field-errors">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                                {% endfor %}
+
+                                {% if request.user.is_staff %}
+                                    <div class="doctor-form-footer">
+                                        <p>
+                                            <i class="bi bi-info-circle"></i>
+                                            Fields marked with <span>*</span> are required.
+                                        </p>
+
+                                        <div class="doctor-form-actions">
+                                            <a href="{% url 'doctors' %}" class="doctor-cancel-btn">
+                                                Cancel
+                                            </a>
+                                            <button type="submit" class="doctor-save-btn">
+                                                <i class="bi bi-check2-circle"></i>
+                                                Save Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="doctor-readonly-notice">
+                                        <i class="bi bi-lock-fill"></i>
+                                        Your professional details are read-only. Contact an
+                                        administrator if any information needs to be changed.
+                                    </div>
+                                {% endif %}
+                    </form>
+                </div>
+{% if not request.user.is_staff %}
+<!-- Account Security -->
+<div class="doctor-security-card">
+
+    <div class="doctor-security-heading">
+        <div class="doctor-security-heading-icon">
+            <i class="bi bi-shield-lock-fill"></i>
+        </div>
+
+        <div>
+            <h2>Account Security</h2>
+            <p>Manage your login credentials and keep your account secure.</p>
+        </div>
+    </div>
+
+    <details class="doctor-password-panel"
+             {% if password_form.errors %}open{% endif %}>
+
+        <summary>
+            <div class="doctor-password-summary">
+                <span class="doctor-password-icon">
+                    <i class="bi bi-key-fill"></i>
+                </span>
+
+                <span class="doctor-password-summary-text">
+                    <strong>Change Password</strong>
+                    <small>Update your current login password</small>
+                </span>
+            </div>
+
+            <span class="doctor-password-chevron">
+                <i class="bi bi-chevron-down"></i>
+            </span>
+        </summary>
+
+        <div class="doctor-password-content">
+
+            <div class="doctor-password-note">
+                <i class="bi bi-info-circle-fill"></i>
+                <p>
+                    Enter your current password and choose a strong
+                    new password. You may be asked to sign in again
+                    depending on your authentication setup.
+                </p>
+            </div>
+
+            <form method="POST" class="doctor-password-form">
+                {% csrf_token %}
+
+                <input type="hidden"
+                       name="action"
+                       value="change_password">
+
+                {% if password_form.non_field_errors %}
+                    <div class="doctor-password-errors">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <div>{{ password_form.non_field_errors }}</div>
+                    </div>
+                {% endif %}
+
+                {% for field in password_form %}
+                    <div class="doctor-password-field
+                        {% if field.errors %}has-error{% endif %}">
+
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <div class="doctor-password-help">
+                                {{ field.help_text|safe }}
+                            </div>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                            <div class="doctor-password-field-error">
+                                <i class="bi bi-exclamation-circle"></i>
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="doctor-password-actions">
+                    <button type="reset"
+                            class="doctor-password-reset">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        Clear Fields
+                    </button>
+
+                    <button type="submit"
+                            class="doctor-password-submit">
+                        <i class="bi bi-shield-check"></i>
+                        Update Password
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </details>
+</div>
+{% endif %}
+                <div class="doctor-edit-security">
+                    <i class="bi bi-lock-fill"></i>
+                    <span>Changes will be saved to the doctor record after submission.</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

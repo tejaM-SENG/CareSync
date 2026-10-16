@@ -1,0 +1,230 @@
+
+{% extends 'healthcare/base.html' %}
+
+{% block title %}Edit Patient | Healthcare Management{% endblock %}
+
+{% block content %}
+
+<section class="patient-edit-page">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <nav class="patient-edit-breadcrumb" aria-label="breadcrumb">
+            <a href="{% url 'dashboard' %}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <a href="{% url 'patients' %}">Patients</a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>Edit Patient</span>
+        </nav>
+
+        <!-- Page heading -->
+        <div class="patient-edit-heading">
+            <div>
+                <span class="patient-edit-eyebrow">
+                    <i class="bi bi-clipboard2-pulse"></i>
+                    PATIENT MANAGEMENT
+                </span>
+
+                <h1>Edit Patient Details</h1>
+
+                <p>
+                    Update patient information and keep healthcare
+                    records accurate and up to date.
+                </p>
+            </div>
+
+            <a href="{% url 'patients' %}" class="patient-edit-back">
+                <i class="bi bi-arrow-left"></i>
+                Back to Patients
+            </a>
+        </div>
+
+        <div class="patient-edit-layout">
+
+            <!-- Patient summary -->
+            <aside class="patient-edit-sidebar">
+                <div class="patient-summary-card">
+
+                    <div class="patient-summary-banner">
+                        <div class="patient-summary-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                    </div>
+
+                    <div class="patient-summary-info">
+                        <span class="patient-summary-label">
+                            PATIENT RECORD
+                        </span>
+
+                        <h2>{{ patient.name }}</h2>
+
+                        <p>
+                            <i class="bi bi-person-vcard"></i>
+                            Patient ID: #{{ patient.pk }}
+                        </p>
+                    </div>
+
+                    <div class="patient-summary-divider"></div>
+
+                    <div class="patient-summary-detail">
+                        <span class="patient-summary-icon">
+                            <i class="bi bi-calendar3"></i>
+                        </span>
+
+                        <div>
+                            <small>Age</small>
+                            <strong>
+                                {% if patient.age %}
+                                    {{ patient.age }} years
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="patient-summary-detail">
+                        <span class="patient-summary-icon">
+                            <i class="bi bi-gender-ambiguous"></i>
+                        </span>
+
+                        <div>
+                            <small>Gender</small>
+                            <strong>
+                                {{ patient.gender|default:"Not provided" }}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="patient-summary-detail">
+                        <span class="patient-summary-icon">
+                            <i class="bi bi-person-badge"></i>
+                        </span>
+
+                        <div>
+                            <small>Assigned Doctor</small>
+                            <strong>
+                                {% if patient.doctor %}
+                                    {{ patient.doctor.name }}
+                                {% else %}
+                                    Not assigned
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="patient-summary-note">
+                        <i class="bi bi-shield-check"></i>
+                        <p>
+                            Please verify the patient's information
+                            before saving any changes.
+                        </p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Edit form -->
+            <div class="patient-edit-main">
+                <div class="patient-edit-card">
+
+                    <div class="patient-edit-form-heading">
+                        <div class="patient-edit-form-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+
+                        <div>
+                            <h2>Patient Information</h2>
+                            <p>
+                                Modify the required details below.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="patient-edit-divider"></div>
+
+                    <form method="POST" class="patient-edit-form">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="patient-edit-alert">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <div>{{ form.non_field_errors }}</div>
+                            </div>
+                        {% endif %}
+
+                        <div class="patient-edit-fields">
+                            {% for field in form %}
+                                <div class="patient-edit-field
+                                    {% if field.name == 'address' %}
+                                        patient-edit-field-full
+                                    {% endif %}
+                                    {% if field.errors %}
+                                        patient-edit-field-invalid
+                                    {% endif %}">
+
+                                    <label for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+
+                                        {% if field.field.required %}
+                                            <span>*</span>
+                                        {% endif %}
+                                    </label>
+
+                                    {{ field }}
+
+                                    {% if field.help_text %}
+                                        <small class="patient-edit-help">
+                                            {{ field.help_text }}
+                                        </small>
+                                    {% endif %}
+
+                                    {% for error in field.errors %}
+                                        <div class="patient-edit-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="patient-edit-form-footer">
+                            <p>
+                                <i class="bi bi-info-circle"></i>
+                                Fields marked with
+                                <span>*</span> are required.
+                            </p>
+
+                            <div class="patient-edit-actions">
+                                <a href="{% url 'patients' %}"
+                                   class="patient-edit-cancel">
+                                    Cancel
+                                </a>
+
+                                <button type="submit"
+                                        class="patient-edit-save">
+                                    <i class="bi bi-check2-circle"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="patient-edit-footnote">
+                    <i class="bi bi-lock-fill"></i>
+                    <span>Ensure patient records remain accurate and confidential.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

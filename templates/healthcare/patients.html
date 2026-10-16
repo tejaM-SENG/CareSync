@@ -1,0 +1,383 @@
+
+{% extends "healthcare/base.html" %}
+{% load static %}
+
+{% block title %}Patients | Healthcare Management{% endblock %}
+
+{% block content %}
+
+<div class="patients-dashboard">
+
+    <!-- Page Heading -->
+    <section class="patients-page-heading">
+        <div>
+            <div class="patients-eyebrow">
+                <i class="bi bi-heart-pulse-fill"></i>
+                HEALTHCARE MANAGEMENT
+            </div>
+
+            <h1>Patient Directory</h1>
+
+            <p>
+                Manage patient records, review patient information,
+                and keep track of assigned healthcare providers.
+            </p>
+        </div>
+
+        {% if request.user.is_staff %}
+        <a href="{% url 'add_patient' %}" class="patients-primary-btn">
+            <i class="bi bi-plus-lg"></i>
+            Add New Patient
+        </a>
+        {% endif %}
+    </section>
+
+    <!-- Hero Banner -->
+    <section class="patients-hero">
+        <div class="patients-hero-content">
+            <span class="patients-hero-label">
+                <i class="bi bi-shield-check"></i>
+                PATIENT CARE PORTAL
+            </span>
+
+            <h2>Better patient records.<br>Better coordinated care.</h2>
+
+            <p>
+                Access patient information and assigned doctors
+                from one organized workspace.
+            </p>
+
+            <a href="#registered-patients" class="patients-hero-link">
+                Explore patient directory
+                <i class="bi bi-arrow-down-right"></i>
+            </a>
+        </div>
+
+        <div class="patients-hero-decoration patients-decoration-one"></div>
+        <div class="patients-hero-decoration patients-decoration-two"></div>
+
+        <div class="patients-hero-symbol">
+            <i class="bi bi-hospital"></i>
+            <span class="patients-symbol-pulse"></span>
+        </div>
+    </section>
+
+    <!-- Summary Cards -->
+    <section class="patients-stats-grid">
+
+        <article class="patients-stat-card">
+            <div class="patients-stat-icon stat-teal">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="patients-stat-content">
+                <span>Total Patients</span>
+                <h3>{{ patients|length }}</h3>
+                <small>Records in directory</small>
+            </div>
+        </article>
+
+        <article class="patients-stat-card">
+            <div class="patients-stat-icon stat-blue">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+            <div class="patients-stat-content">
+                <span>Assigned Doctors</span>
+                <h3>{{ assigned_patients_count|default:"—" }}</h3>
+                <small>Patients with a doctor</small>
+            </div>
+        </article>
+
+        <article class="patients-stat-card">
+            <div class="patients-stat-icon stat-purple">
+                <i class="bi bi-calendar2-check-fill"></i>
+            </div>
+            <div class="patients-stat-content">
+                <span>Recently Registered</span>
+                <h3>{{ recent_patients_count|default:"—" }}</h3>
+                <small>Registered in the last 30 days</small>
+            </div>
+        </article>
+
+    </section>
+
+    <!-- Patient Directory -->
+    <section class="patients-directory-card" id="registered-patients">
+
+        <div class="patients-directory-header">
+            <div>
+                <span class="patients-section-kicker">RECORDS</span>
+                <h2>Registered Patients</h2>
+                <p>Review and access individual patient records.</p>
+            </div>
+
+            <span class="patients-count-badge">
+                <i class="bi bi-person-lines-fill"></i>
+                {{ patients|length }} patients
+            </span>
+        </div>
+
+        <!-- Search -->
+        <div class="patients-table-toolbar">
+            <div class="patients-search-box">
+                <i class="bi bi-search"></i>
+                <input
+                    type="search"
+                    id="patientSearch"
+                    placeholder="Search name, ID, phone or doctor..."
+                    aria-label="Search patients"
+                >
+            </div>
+
+            <span class="patients-table-hint">
+                <i class="bi bi-info-circle"></i>
+                Select a patient to view their record
+            </span>
+        </div>
+
+        <div class="table-responsive patients-table-responsive">
+            <table class="table patients-modern-table align-middle"
+                   id="patientsTable">
+
+                <thead>
+                    <tr>
+                        <th class='ps-5'>Patient</th>
+                        <th>Demographics</th>
+                        <th>Contact</th>
+                        <th>Assigned Doctor</th>
+                        <th>Registered</th>
+                        <th class="text-center ps-5">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for p in patients %}
+                    <tr class="patient-table-row">
+
+                        <!-- Patient -->
+                        <td>
+                            <div class="patients-person-cell">
+                                <div class="patients-person-avatar">
+                                    {{ p.name|first|upper }}
+                                </div>
+
+                                <div class="patients-person-info">
+                                    <strong>{{ p.name|upper }}</strong>
+                                    <span>Patient #{{ p.pk }}</span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Demographics -->
+                        <td>
+                            <div class="patients-demographics">
+                                <strong>{{ p.age }} Years</strong>
+
+                                <span class="patients-gender
+                                    {% if p.gender == 'Male' %}
+                                        gender-male
+                                    {% elif p.gender == 'Female' %}
+                                        gender-female
+                                    {% else %}
+                                        gender-other
+                                    {% endif %}">
+                                    {{ p.gender|default:"Not specified" }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- Contact -->
+                        <td>
+                            <div class="patients-contact-cell">
+                                <i class="bi bi-telephone"></i>
+                                <span>{{ p.phone|default:"Not provided" }}</span>
+                            </div>
+                        </td>
+
+                        <!-- Doctor -->
+                        <td>
+                            {% if p.doctor %}
+                            <div class="patients-doctor-cell">
+                                <span class="patients-doctor-avatar">
+                                    <i class="bi bi-person-badge-fill"></i>
+                                </span>
+                                <div>
+                                    <strong>{{ p.doctor.name|upper }}</strong>
+                                    <span>
+                                        {{ p.doctor.specialization|default:"Healthcare provider" }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% else %}
+                            <span class="patients-unassigned">
+                                <i class="bi bi-dash-circle"></i>
+                                Not assigned
+                            </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Registered -->
+                        <td>
+                            <div class="patients-date-cell">
+                                <strong>{{ p.date_registered|date:"d M Y" }}</strong>
+                                <span>{{ p.date_registered|date:"h:i A" }}</span>
+                            </div>
+                        </td>
+
+                        <!-- Actions -->
+                        <td>
+                            <div class="patients-row-actions">
+
+                                <a href="{% url 'patient_detail' p.pk %}"
+                                   class="patients-view-action"
+                                   title="View patient record"
+                                   aria-label="View {{ p.name }}'s patient record">
+                                    <i class="bi bi-eye"></i>
+                                    <span>View</span>
+                                </a>
+
+                                {% if request.user.is_staff %}
+                                <a href="{% url 'edit_patient' p.pk %}"
+                                   class="patients-edit-action"
+                                   title="Edit patient"
+                                   aria-label="Edit {{ p.name }}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <a href="{% url 'delete_patient' p.pk %}"
+                                   class="patients-delete-action"
+                                   title="Delete patient"
+                                   aria-label="Delete {{ p.name }}">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                                {% endif %}
+
+                            </div>
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="patients-empty-state">
+                                <div class="patients-empty-icon">
+                                    <i class="bi bi-person-vcard"></i>
+                                </div>
+
+                                <h3>No patients registered yet</h3>
+
+                                <p>
+                                    Patient records will appear here
+                                    when they are added to the system.
+                                </p>
+
+                                {% if request.user.is_staff %}
+                                <a href="{% url 'add_patient' %}"
+                                   class="patients-primary-btn">
+                                    <i class="bi bi-plus-lg"></i>
+                                    Register First Patient
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="patients-directory-footer">
+            <span>
+                <i class="bi bi-lock-fill"></i>
+                Patient information is confidential
+            </span>
+
+            <a href="{% url 'dashboard' %}">
+                <i class="bi bi-arrow-left"></i>
+                Back to Dashboard
+            </a>
+        </div>
+
+    </section>
+
+</div>
+
+
+{% if patients %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("patientSearch");
+    const table = document.getElementById("patientsTable");
+
+    if (!searchInput || !table) {
+        return;
+    }
+
+    const rows = Array.from(
+        table.querySelectorAll("tbody tr.patient-table-row")
+    );
+
+    const tbody = table.querySelector("tbody");
+
+    // Create a message for searches with no matching patients.
+    const emptyMessage = document.createElement("tr");
+    emptyMessage.id = "patientSearchEmpty";
+
+    emptyMessage.innerHTML = `
+        <td colspan="6">
+            <div class="patients-empty-state">
+                <div class="patients-empty-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h3>No matching patients found</h3>
+                <p>Try searching by patient name, ID, phone, or doctor.</p>
+            </div>
+        </td>
+    `;
+
+    emptyMessage.hidden = true;
+    tbody.appendChild(emptyMessage);
+
+    // Create a result counter in the existing toolbar.
+    const resultCount = document.createElement("span");
+    resultCount.className = "patients-table-hint";
+    resultCount.style.marginLeft = "auto";
+
+    const toolbar = document.querySelector(".patients-table-toolbar");
+
+    if (toolbar) {
+        toolbar.appendChild(resultCount);
+    }
+
+    function filterPatients() {
+        const query = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+            const text = row.textContent.toLowerCase();
+            const matches = text.includes(query);
+
+            row.hidden = !matches;
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        emptyMessage.hidden = visibleCount !== 0;
+
+        if (resultCount) {
+            resultCount.textContent =
+                visibleCount +
+                (visibleCount === 1 ? " patient found" : " patients found");
+        }
+    }
+
+    searchInput.addEventListener("input", filterPatients);
+
+    filterPatients();
+});
+</script>
+{% endif %}
+
+{% endblock %}

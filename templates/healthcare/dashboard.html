@@ -1,0 +1,209 @@
+{% extends "healthcare/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | Healthcare Management System{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <!-- HERO SECTION -->
+    <div class="dashboard-hero">
+        <div class="container">
+            <div class="row align-items-center g-5">
+
+                <div class="col-lg-7">
+                    <div class="dashboard-eyebrow">
+                        <span class="status-dot"></span>
+                        HEALTHCARE MANAGEMENT PLATFORM
+                    </div>
+
+                    <h1 class="dashboard-title">
+                        Welcome back,
+                        <span>{{ request.user.username }}.</span>
+                    </h1>
+
+                    <p class="dashboard-description">
+                        Your central workspace for accessing doctor directories,
+                        managing patient information, and exploring healthcare data
+                        through a secure management platform.
+                    </p>
+
+                    <div class="dashboard-hero-actions">
+                        <a href="{% url 'doctors' %}" class="dashboard-primary-btn">
+                            <i class="bi bi-person-badge"></i>
+                            Explore Doctors
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+
+                        <a href="{% url 'patients' %}" class="dashboard-secondary-btn">
+                            <i class="bi bi-people"></i>
+                            View Patients
+                        </a>
+                    </div>
+
+                    <div class="dashboard-trust-row">
+                        <span><i class="bi bi-shield-check"></i> Secure access</span>
+                        <span><i class="bi bi-hospital"></i> Centralized records</span>
+                        <span><i class="bi bi-cloud-check"></i> REST API powered</span>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="dashboard-visual">
+                        <div class="visual-glow"></div>
+
+                        <img
+                            src="{% static 'images/healthcare.png' %}"
+                            alt="Healthcare professionals and patient care"
+                            class="dashboard-hero-image"
+                        >
+
+                        <div class="visual-floating-card visual-card-top">
+                            <div class="visual-card-icon">
+                                <i class="bi bi-heart-pulse"></i>
+                            </div>
+                            <div>
+                                <strong>Healthcare</strong>
+                                <span>Connected care</span>
+                            </div>
+                        </div>
+
+                        <div class="visual-floating-card visual-card-bottom">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <div>
+                                <strong>Secure workspace</strong>
+                                <span>Built with Django</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <section class="dashboard-main">
+        <div class="container">
+
+            <div class="dashboard-section-heading">
+                <div>
+                    <span class="dashboard-section-label">YOUR WORKSPACE</span>
+                    <h2>Healthcare management</h2>
+                    <p>Choose a section to access the information you need.</p>
+                </div>
+
+                <div class="dashboard-date-badge">
+                    <i class="bi bi-grid-1x2"></i>
+                    Management overview
+                </div>
+            </div>
+
+            <div class="row g-4">
+
+                <!-- DOCTOR CARD -->
+                <div class="col-md-6">
+                    <article class="management-card doctor-management-card">
+                        <div class="management-card-top">
+                            <div class="management-card-icon doctor-card-icon">
+                                <i class="bi bi-person-badge"></i>
+                            </div>
+                            <span class="management-card-tag">PROFESSIONALS</span>
+                        </div>
+
+                        <h3>Doctor Directory</h3>
+                        <p>
+                            Explore doctor profiles, specializations, contact
+                            details, and other available professional information.
+                        </p>
+
+                        <div class="management-card-bottom">
+                            <span>Access doctor information</span>
+                            <a href="{% url 'doctors' %}"
+                               class="management-card-link"
+                               aria-label="View doctors">
+                                <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- PATIENT CARD -->
+                <div class="col-md-6">
+                    <article class="management-card patient-management-card">
+                        <div class="management-card-top">
+                            <div class="management-card-icon patient-card-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <span class="management-card-tag">PATIENT RECORDS</span>
+                        </div>
+
+                        <h3>Patient Directory</h3>
+                        <p>
+                            Access patient records and review assigned doctor
+                            information through the healthcare system.
+                        </p>
+
+                        <div class="management-card-bottom">
+                            <span>Access patient information</span>
+                            <a href="{% url 'patients' %}"
+                               class="management-card-link"
+                               aria-label="View patients">
+                                <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+            </div>
+
+            <!-- API TECHNOLOGY PANEL -->
+            <div class="dashboard-tech-panel">
+                <div class="tech-panel-icon">
+                    <i class="bi bi-braces"></i>
+                </div>
+
+                <div class="tech-panel-copy">
+                    <span class="dashboard-section-label">UNDER THE HOOD</span>
+                    <h3>Django REST Framework integration</h3>
+                    <p>
+                        Healthcare information is managed using Django,
+                        authenticated API endpoints, and a relational database.
+                    </p>
+
+                    <div class="tech-stack">
+                        <span>Django</span>
+                        <span>DRF</span>
+                        <span>SQLite</span>
+                        <span>Bootstrap 5</span>
+                    </div>
+                </div>
+
+                <div class="tech-panel-decoration">
+                    <i class="bi bi-diagram-3"></i>
+                </div>
+            </div>
+
+            <!-- SECURITY NOTE -->
+            <div class="dashboard-security-note">
+                <i class="bi bi-shield-lock-fill"></i>
+                <p>
+                    <strong>Protected workspace</strong>
+                    <span>Sign out when you finish using this account.</span>
+                </p>
+
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="dashboard-signout-btn">
+                        Sign out <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
