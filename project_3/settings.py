@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-5akdl%=%5772v2r7v$*#cc^nj8+!u#vo=so3&yi3$cips#q3ym
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'caresync-95wo.onrender.com',
+    'caresync-qcqh.onrender.com',
     'localhost',
     '127.0.0.1',
 ]
